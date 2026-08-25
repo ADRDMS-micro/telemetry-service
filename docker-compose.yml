@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  telemetry-service:
+    build:
+      context: ../../
+      dockerfile: backend/telemetry-service/Dockerfile
+    ports:
+      - "50052:50051"
+    depends_on:
+      - telemetry-redis
+      - clickhouse
+    networks:
+      - saga_network
+  telemetry-redis:
+    image: redis:7-alpine
+    ports:
+      - "6379"
+    networks:
+      - saga_network
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    ports:
+      - "8123"
+    networks:
+      - saga_network
+networks:
+  saga_network:
+    external: true
